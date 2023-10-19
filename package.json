@@ -1,0 +1,49 @@
+{
+  "name": "vscode-treeview-checkbox-bug-demo",
+  "displayName": "vscode-treeview-checkbox-bug-demo",
+  "description": "Demo of a bug in treeview checkboxes",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.83.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "tree-view",
+          "title": "Tree View",
+          "icon": "list-tree.svg"
+        }
+      ]
+    },
+    "views": {
+      "tree-view": [
+        {
+          "id": "tree-view-bug",
+          "name": "Tree View",
+          "icon": "list-tree.svg"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.83.0",
+    "@types/node": "18.x",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "eslint": "^8.50.0",
+    "typescript": "^5.2.2"
+  }
+}
