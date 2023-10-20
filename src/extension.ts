@@ -20,14 +20,19 @@ const treeState = [
   },
 ];
 
+let childrenLoaded = false;
+
 export function activate(context: vscode.ExtensionContext) {
   const onDidChangeTreeData = new vscode.EventEmitter<void | string>();
   const treeDataProvider: vscode.TreeDataProvider<string> = {
     onDidChangeTreeData: onDidChangeTreeData.event,
-    getChildren(element?: string): vscode.ProviderResult<string[]> {
+    getChildren(element?: string) {
       if (!element) {
+        // Root element, return workflows
         return treeState.map((w) => w.label);
       }
+
+      // Child element, return jobs for workflow
       const children: string[] = [];
       for (const w of treeState) {
         if (w.label !== element) {
@@ -41,17 +46,19 @@ export function activate(context: vscode.ExtensionContext) {
     },
     getTreeItem(element: string) {
       if (element.includes("/")) {
+        // Contains slash, job tree item
         const [workflowElement, jobElement] = element.split("/");
         const state = treeState
           .find((w) => w.label === workflowElement)!
           .jobs.find((j) => j.label === jobElement);
-        const item = new vscode.TreeItem(element);
+        const item = new vscode.TreeItem(jobElement);
         item.checkboxState = state!.selected
           ? vscode.TreeItemCheckboxState.Checked
           : vscode.TreeItemCheckboxState.Unchecked;
         return item;
       }
 
+      // No slash, workflow tree item
       const state = treeState.find((w) => w.label === element);
       const item = new vscode.TreeItem(
         element,
@@ -78,18 +85,18 @@ export function activate(context: vscode.ExtensionContext) {
             : "unchecked"
         }`
       );
+
       let state: any;
       if (element.includes("/")) {
         const [workflowElement, jobElement] = element.split("/");
         state = treeState
           .find((w) => w.label === workflowElement)!
           .jobs.find((j) => j.label === jobElement);
-        state!.selected = checked === vscode.TreeItemCheckboxState.Checked;
       } else {
         state = treeState.find((w) => w.label === element);
       }
       state!.selected = checked === vscode.TreeItemCheckboxState.Checked;
-      onDidChangeTreeData.fire(element);
+      // onDidChangeTreeData.fire(element);
     }
   });
 
